@@ -3,38 +3,30 @@
 //  All Rights Reserved 
 //******************************************************************************
 //
-// File     : Common.h
-// Summary  : List all the files in the given directory using Linked List
+// File     : LlCreation.h
+// Summary  : To Create Nodes in LL
 // Note     : None
 // Author   : Sreelakshmy M.A.
 // Date     : 20/01/2026
 //
 //******************************************************************************
 
-#ifndef _COMMON_H_ 
-#define _COMMON_H_
+#ifndef _LL_CREATION_H_ 
+#define _LL_CREATION_H_
 
 //******************************* Include Files ********************************
 #include <stdio.h>
+#include <dirent.h>
+#include "Common.h"
 
 //******************************* Global Types *********************************
-typedef struct _FILE_DATA_
-{
-    uint8_t mpucFileName[25];
-    uint8_t mucFileType;
-    uint16_t mucFileSize;
-}FILE_DATA;
-
-typedef struct _FILE_LINKED_LIST_
-{
-    FILE_DATA *mpstFileData;
-    struct _FILE_LINKED_LIST_ *mpstnext;
-}FILE_LINKED_LIST;
 
 //***************************** Global Constants *******************************
 
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
-#endif //_COMMON_H_
+void AddNewNodeLL(struct dirent *pstDirData, FILE_LINKED_LIST **pReadFileHead);
+bool PrintLinkedList(FILE_LINKED_LIST *pReadFileHead);
+#endif //_LL_CREATION_H_
 //EOF

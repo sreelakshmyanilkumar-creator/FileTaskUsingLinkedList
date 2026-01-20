@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include "Common.h"
+#include "LlCreation.h"
 
 //******************************* Local Types **********************************
 
@@ -44,12 +45,12 @@ int main(int argc, char *argv[])
     }
     else
     {
-            printf("The string passed is: %s\n", argv[1]);
+        printf("The string passed is: %s\n", argv[1]);
             
-            if(ReadFileData(argv[1], &pstFileHead) != false)
-            {
-                blRet = true;
-            }
+        if(ReadFileData(argv[1], pstFileHead) != false)
+        {
+            blRet = true;
+        }
     }
 
     return blRet;

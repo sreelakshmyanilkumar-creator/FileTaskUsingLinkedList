@@ -18,6 +18,7 @@
 #include <stdbool.h>
 #include <dirent.h>
 #include "Common.h"
+#include "LlCreation.h"
 
 //******************************* Local Types **********************************
 
@@ -43,18 +44,20 @@ bool ReadFileData(const uint8_t *pucReadFileName,
 {
     bool blRet = false;
     struct dirent *pstDirData;
-    pReadFileHead = (FILE_LINKED_LIST*)malloc(sizeof(FILE_LINKED_LIST));
-
     DIR *DirData = opendir(pucReadFileName);
-
+ 
     if(DirData != NULL)
     {
         while ((pstDirData = readdir(DirData)) != NULL)
         {
-             printf("%s\n", pstDirData->d_name);
+            //printf("%s\n", pstDirData->d_name);
+            AddNewNodeLL(pstDirData, &pReadFileHead);
+        }
+        if(PrintLinkedList(pReadFileHead) != false)
+        {
+            blRet = true;
         }
     }
 
-    free(pReadFileHead);
     return blRet;
 }
