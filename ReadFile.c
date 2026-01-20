@@ -50,8 +50,7 @@ bool ReadFileData(const uint8_t *pucReadFileName,
     {
         while ((pstDirData = readdir(DirData)) != NULL)
         {
-            //printf("%s\n", pstDirData->d_name);
-            AddNewNodeLL(pstDirData, &pReadFileHead);
+            AddNewNodeLL(pstDirData, &pReadFileHead, pucReadFileName);
         }
         if(PrintLinkedList(pReadFileHead) != false)
         {

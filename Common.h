@@ -21,7 +21,7 @@
 typedef struct _FILE_DATA_
 {
     uint8_t mpucFileName[25];
-    uint8_t mucFileType;
+    uint8_t mucFileType[25];
     uint16_t mucFileSize;
 }FILE_DATA;
 

@@ -22,11 +22,14 @@
 //******************************* Global Types *********************************
 
 //***************************** Global Constants *******************************
+#define FULL_PATH_SIZE 1024
 
 //***************************** Global Variables *******************************
 
 //**************************** Forward Declarations ****************************
-void AddNewNodeLL(struct dirent *pstDirData, FILE_LINKED_LIST **pReadFileHead);
+void AddNewNodeLL(struct dirent *pstDirData, FILE_LINKED_LIST **pReadFileHead, 
+    uint8_t *pucReadFileName);
 bool PrintLinkedList(FILE_LINKED_LIST *pReadFileHead);
+void ReadFileType(struct dirent *pstDirData, uint8_t *FileType);
 #endif //_LL_CREATION_H_
 //EOF
