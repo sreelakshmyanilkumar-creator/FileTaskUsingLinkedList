@@ -49,40 +49,6 @@ bool InitializeLinkedList(FILE_LINKED_LIST **pstFileHead)
     return blRet;
 }
 
-//******************************.LinkedListCreate.******************************
-//Purpose : To create a Linked list
-//Inputs  : pstReadData - Data to be added to each node
-//Outputs : pstLinkdListHead - Data add to new node 
-//Return  : Boolean value - for both input success return will be true else 
-//Notes   : None
-//*
-bool LinkedListCreate(FILE_LINKED_LIST **pstLinkdListHead, 
-    FILE_DATA *pstReadData)
-{
-    bool blRet = false;
-
-    if(*pstLinkdListHead == NULL && pstReadData != NULL)
-    {
-        while(pstReadData != NULL)
-        {
-            printf("%s\n", pstReadData->mpucFileName);
-            printf("%d\n", pstReadData->mucFileSize);
-            printf("%s\n", pstReadData->mucFileType);
-
-            LinkedListAddNode(pstLinkdListHead, pstReadData);
-            pstReadData++;
-        }
-
-        blRet = true;
-    }
-    else
-    {
-        printf("Create Linked List Fail\n");
-    }
-
-    return blRet;
-}
-
 //******************************.LinkedListAddNode.*****************************
 //Purpose : To create new node in the beginning of the linked list
 //Inputs  : pstReadData - Data to be added to each node
@@ -109,7 +75,8 @@ bool LinkedListAddNode(FILE_LINKED_LIST **pstLinkdListHead,
                 strncpy(pstNewNode->mpstFileData->mpucFileName, 
                 pstReadData->mpucFileName, 
                 sizeof(pstNewNode->mpstFileData->mpucFileName) - 1);
-                pstNewNode->mpstFileData->mucFileSize = pstReadData->mucFileSize;
+                pstNewNode->mpstFileData->mucFileSize = 
+                pstReadData->mucFileSize;
                 strncpy(pstNewNode->mpstFileData->mucFileType, 
                 pstReadData->mucFileType, 
                 sizeof(pstNewNode->mpstFileData->mucFileType) - 1);

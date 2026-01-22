@@ -69,7 +69,7 @@ bool ReadFileSize(struct stat *pstStatFileData, struct dirent *pstDirData,
 bool ReadFileType(struct dirent *pstDirData, uint8_t *pucFileType)
 {
     bool blRet = false;
-    const char *pucCheckDot;
+    uint8_t *pucCheckDot;
 
     if (pstDirData != NULL && pucFileType != NULL)
     {
@@ -77,12 +77,12 @@ bool ReadFileType(struct dirent *pstDirData, uint8_t *pucFileType)
 
         if (!pucCheckDot || pucCheckDot == pstDirData->d_name)
         {
-            strncpy((char*)pucFileType, "No", 256);   // assume buffer >= 50
+            strncpy((char*)pucFileType, "No", 256);
             pucFileType[255] = '\0';
         }
         else
         {
-            strncpy((char*)pucFileType, pucCheckDot + 1, 50);
+            strncpy((char*)pucFileType, pucCheckDot + 1, 256);
             pucFileType[255] = '\0';
         }
 
@@ -136,7 +136,8 @@ bool ReadFilesAndBuildList(const uint8_t *pucReadFileName,
                 if(pstReadData != NULL)
                 {
                     // Read file size and file type
-                    if(ReadFileSize(&stStatFileData, pstDirData, pucReadFileName))
+                    if(ReadFileSize(&stStatFileData, pstDirData, 
+                        pucReadFileName))
                     {
                         if(ReadFileType(pstDirData, ucFileType))
                         {
@@ -147,11 +148,6 @@ bool ReadFilesAndBuildList(const uint8_t *pucReadFileName,
                             pstReadData->mucFileSize = stStatFileData.st_size;
                             strncpy(pstReadData->mucFileType, ucFileType, 
                                 sizeof(pstReadData->mucFileType) - 1);
-
-                            //Debug prints
-                            printf("%s\n", pstReadData->mpucFileName);
-                            printf("%d\n", pstReadData->mucFileSize);
-                            printf("%s\n", pstReadData->mucFileType);
 
                             //Add Node in the beginning of linked list
                             if(LinkedListAddNode(pstLinkdListHead, pstReadData))

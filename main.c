@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
     if(CmdLineArgCheck(argc, (uint8_t**)argv))
     {
         InitializeLinkedList(&pstLinkdListHead);
-
-       if(pstLinkdListHead == NULL)
+        
+        if(pstLinkdListHead == NULL)
         {
             printf("Linked List Initialized Successfully\n");
 
@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
 
                 if(LinkedListPrint(pstLinkdListHead))
                 {
+                    printf("Linked List printed Successfully\n");
                     lRet = true;
                 }
             }
