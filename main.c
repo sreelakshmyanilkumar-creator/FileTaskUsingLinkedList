@@ -32,7 +32,7 @@ bool CmdLineArgCheck(uint8_t ucargc, uint8_t **pucargv);
 
 //********************************.main.****************************************
 //Purpose : main function.
-//Inputs  : Directory in the PC from which we need to read files
+//Inputs  : Directory in the PC from which we need to read files as CLA
 //Outputs : None
 //Return  : Interger value - Upon success return will be 0 else any non zero
 //Notes   : None
@@ -42,8 +42,6 @@ int main(int argc, char *argv[])
     int lRet = false;
     FILE_DATA pstReadData;
     FILE_LINKED_LIST *pstLinkdListHead = NULL;
-    bool blReadRet = false;
-    uint8_t lIndex = 0;
 
     if(CmdLineArgCheck(argc, (uint8_t**)argv))
     {
@@ -53,11 +51,14 @@ int main(int argc, char *argv[])
         {
             printf("Linked List Initialized Successfully\n");
 
-            if(ReadFilesAndBuildList(argv[1], &pstReadData, &pstLinkdListHead))
+            if(ReadFilesAndBuildList(argv[1], &pstLinkdListHead))
             {
                 printf("Data Read successfull\n");
-                LinkedListPrint(pstLinkdListHead);
-                lRet = true;
+
+                if(LinkedListPrint(pstLinkdListHead))
+                {
+                    lRet = true;
+                }
             }
         }
     }
@@ -81,7 +82,7 @@ bool CmdLineArgCheck(uint8_t ucargc, uint8_t **pucargv)
         if(ucargc < MAIN_ARGC)
         {
             printf("Invalid Command Line Argument\n");
-            printf("Use: %s ./LinkedList <Directory path> \n", 
+            printf("Use: %s <Directory path> \n", 
                 (char*)pucargv[0]);
         }
         else

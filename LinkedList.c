@@ -40,7 +40,7 @@ bool InitializeLinkedList(FILE_LINKED_LIST **pstFileHead)
 {
     bool blRet = false;
 
-    if(pstFileHead == NULL)
+    if(pstFileHead != NULL)
     {
         *pstFileHead = NULL;
         blRet = true;
@@ -99,28 +99,24 @@ bool LinkedListAddNode(FILE_LINKED_LIST **pstLinkdListHead,
     if(pstReadData != NULL)
     {
         pstNewNode = (FILE_LINKED_LIST*)malloc(sizeof(FILE_LINKED_LIST));
-        pstNewNode->mpstFileData = (FILE_DATA*)malloc(sizeof(FILE_DATA));
-
+    
         if(pstNewNode != NULL)
         {
-            strcpy(pstNewNode->mpstFileData->mpucFileName, 
-                pstReadData->mpucFileName);
-            pstNewNode->mpstFileData->mucFileSize = pstReadData->mucFileSize;
-            strcpy(pstNewNode->mpstFileData->mucFileType, 
-                pstReadData->mucFileType);
-            if(*pstLinkdListHead == NULL)
+            pstNewNode->mpstFileData = (FILE_DATA*)malloc(sizeof(FILE_DATA));
+
+            if(pstNewNode->mpstFileData != NULL)
             {
-                printf("LL Null\n");
-                pstNewNode->mpstnext = NULL;
-                *pstLinkdListHead = pstNewNode;
-            }
-            else
-            {
-                printf("LL Not Null\n");
+                strncpy(pstNewNode->mpstFileData->mpucFileName, 
+                pstReadData->mpucFileName, 
+                sizeof(pstNewNode->mpstFileData->mpucFileName) - 1);
+                pstNewNode->mpstFileData->mucFileSize = pstReadData->mucFileSize;
+                strncpy(pstNewNode->mpstFileData->mucFileType, 
+                pstReadData->mucFileType, 
+                sizeof(pstNewNode->mpstFileData->mucFileType) - 1);
+                
                 pstNewNode->mpstnext = *pstLinkdListHead;
                 *pstLinkdListHead = pstNewNode;
             }
-
             blRet = true;
         }
     }
@@ -160,88 +156,3 @@ bool LinkedListPrint(FILE_LINKED_LIST *pstLinkdListHead)
 
     return blRet;
 }
-
-
-
-
-
-
-
-
-
-
-//******************************.AddNewNodeLL.**********************************
-//Purpose : To create new node in linked list.
-//Inputs  : pstDirData      - library pointer to structure to get file data
-//          pReadFileHead   - Linked list head 
-//Outputs : New node is created
-//Return  : None
-//Notes   : None
-//*
-#if 0
-void AddNewNodeLL(struct dirent *pstDirData, FILE_LINKED_LIST **pReadFileHead, 
-    uint8_t *pucReadFileName)
-{
-    struct stat st;
-    uint8_t ucfullpath[FULL_PATH_SIZE] = {0};
-
-    snprintf((char*)ucfullpath, sizeof(ucfullpath), "%s/%s", pucReadFileName, 
-    pstDirData->d_name);
-    stat(ucfullpath, &st);
-
-    FILE_LINKED_LIST *pstNewNode = 
-    (FILE_LINKED_LIST*)malloc(sizeof(FILE_LINKED_LIST));
-
-    pstNewNode->mpstFileData = (FILE_DATA*)malloc(sizeof(FILE_DATA));
-
-    ReadFileType(pstDirData, pstNewNode->mpstFileData->mucFileType);
-
-    strcpy(pstNewNode->mpstFileData->mpucFileName, pstDirData->d_name);
-    pstNewNode->mpstFileData->mucFileSize  = st.st_size;
-    //strcpy(pstNewNode->mpstFileData->mucFileType, (char*)pucFileType);
-
-    if(*pReadFileHead == NULL)
-    {
-        pstNewNode->mpstnext = NULL;
-        *pReadFileHead = pstNewNode;
-    }
-    else
-    {
-        pstNewNode->mpstnext = *pReadFileHead;
-        *pReadFileHead = pstNewNode;
-    }
-
-    return;
-}
-
-//******************************.PrintLinkedList.*******************************
-//Purpose : To print linked list.
-//Inputs  : pReadFileHead   - Linked list head 
-//Outputs : Linked list printed
-//Return  : None
-//Notes   : None
-//*
-bool PrintLinkedList(FILE_LINKED_LIST *pReadFileHead)
-{
-    bool blRet = false;
-
-    if(pReadFileHead != NULL)
-    {
-        FILE_LINKED_LIST *pstTempNode = pReadFileHead;
-
-        while(pstTempNode != NULL)
-        {
-            printf("%-20s %-10d %-10s\n",
-            pstTempNode->mpstFileData->mpucFileName,
-            pstTempNode->mpstFileData->mucFileSize,
-            pstTempNode->mpstFileData->mucFileType);
-
-            pstTempNode = pstTempNode->mpstnext;
-        }
-        printf("NULL\n");
-        blRet = true;
-    }
-
-    return blRet;
-}
-#endif

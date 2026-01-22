@@ -22,8 +22,8 @@
 //******************************* Global Types *********************************
 typedef struct _FILE_DATA_
 {
-    uint8_t mpucFileName[25];
-    uint8_t mucFileType[25];
+    uint8_t mpucFileName[256];
+    uint8_t mucFileType[256];
     uint16_t mucFileSize;
 }FILE_DATA;
 
@@ -39,7 +39,7 @@ typedef struct _FILE_LINKED_LIST_
 
 //**************************** Forward Declarations ****************************
 bool ReadFilesAndBuildList(const uint8_t *pucReadFileName, 
-    FILE_DATA *pstReadData, FILE_LINKED_LIST **pstLinkdListHead);
+    FILE_LINKED_LIST **pstLinkdListHead);
 bool ReadFileSize(struct stat *pstStatFileData, struct dirent *pstDirData,
             uint8_t *pucReadFileName);
 bool ReadFileType(struct dirent *pstDirData, uint8_t *pucFileType);

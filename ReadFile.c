@@ -53,46 +53,52 @@ bool ReadFileSize(struct stat *pstStatFileData, struct dirent *pstDirData,
     }
     else
     {
-        printf("ReadFileSize fail\n");
+        printf("ReadFileSize fail - Pointer not correctly passed\n");
     }
 
     return blRet;
 }
 
 //******************************.ReadFileType.**********************************
-//Purpose : To read file type in a structure variable
-//Inputs  : pstDirData - Character Pointer to give the name of the 
-//          directory
-//Outputs : pucFileType - FileType is updated
-//Return  : Boolean value - return true if success else false
+//Purpose : To read file type in a structure variable.
+//Inputs  : pstDirData - A dirent pointer to get the name of the file.
+//Outputs : pucFileType - A character to update the type.
+//Return  : Boolean value - return true if success else false.
 //Notes   : None
 //*
 bool ReadFileType(struct dirent *pstDirData, uint8_t *pucFileType)
 {
     bool blRet = false;
-    const uint8_t *pucCheckDot;
+    const char *pucCheckDot;
 
-    if(pstDirData != NULL && pucFileType != NULL)
+    if (pstDirData != NULL && pucFileType != NULL)
     {
         pucCheckDot = strrchr(pstDirData->d_name, '.');
 
         if (!pucCheckDot || pucCheckDot == pstDirData->d_name)
         {
-            strcpy((char*)pucFileType, "No");
+            strncpy((char*)pucFileType, "No", 256);   // assume buffer >= 50
+            pucFileType[255] = '\0';
         }
-        strcpy((char*)pucFileType, pucCheckDot+1);
+        else
+        {
+            strncpy((char*)pucFileType, pucCheckDot + 1, 50);
+            pucFileType[255] = '\0';
+        }
+
         blRet = true;
     }
     else
     {
-        printf("Read file type fail\n");
+        printf("Read file type fail - Pointer not correctly passed\n");
     }
 
     return blRet;
 }
 
-//******************************.ReadFileData.**********************************
-//Purpose : To read file data and save to file data structure
+
+//**************************.ReadFilesAndBuildList.*****************************
+//Purpose : To read file data and create linked list node
 //Inputs  : pucReadFileName - Character Pointer to give the name of the 
 //          directory
 //Outputs : pReadFileHead - Updated file data in the structure pointer
@@ -102,55 +108,65 @@ bool ReadFileType(struct dirent *pstDirData, uint8_t *pucFileType)
 //Notes   : None
 //*
 bool ReadFilesAndBuildList(const uint8_t *pucReadFileName, 
-    FILE_DATA *pstReadData, FILE_LINKED_LIST **pstLinkdListHead)
+    FILE_LINKED_LIST **pstLinkdListHead)
 {
     bool blRet = false;
     struct dirent *pstDirData;
     struct stat stStatFileData;
-    uint8_t ucFileType[25] = {0};
+    uint8_t ucFileType[256] = {0};
     DIR *pstDirDataOprtn = NULL;
+    FILE_DATA *pstReadData = NULL;
 
-    if(pucReadFileName != NULL && pstReadData != NULL && 
-        *pstLinkdListHead == NULL)
+    if(pucReadFileName != NULL && *pstLinkdListHead == NULL)
     {
         pstDirDataOprtn = opendir(pucReadFileName);
 
         if(pstDirDataOprtn != NULL)
         {
-            pstReadData = (FILE_DATA*)malloc(sizeof(FILE_DATA));
-
-            if(pstReadData != NULL)
+            while ((pstDirData = readdir(pstDirDataOprtn)) != NULL)
             {
-                while ((pstDirData = readdir(pstDirDataOprtn)) != NULL)
-                {   
-                    if (strcmp(pstDirData->d_name, ".") == 0 || 
-                    strcmp(pstDirData->d_name, "..") == 0) 
-                    { 
-                        continue;
-                    }
+                if (strcmp(pstDirData->d_name, ".") == 0 || 
+                strcmp(pstDirData->d_name, "..") == 0) 
+                { 
+                    continue;
+                }
+                
+                pstReadData = (FILE_DATA*)malloc(sizeof(FILE_DATA));
 
+                if(pstReadData != NULL)
+                {
                     // Read file size and file type
-                    if(ReadFileSize(&stStatFileData, pstDirData, 
-                        pucReadFileName))
+                    if(ReadFileSize(&stStatFileData, pstDirData, pucReadFileName))
                     {
                         if(ReadFileType(pstDirData, ucFileType))
                         {
                             // Assign the read value to the output structure
-                            strcpy(pstReadData->mpucFileName, 
-                                pstDirData->d_name);
+                            strncpy(pstReadData->mpucFileName, 
+                                pstDirData->d_name, 
+                                sizeof(pstReadData->mpucFileName) - 1);
                             pstReadData->mucFileSize = stStatFileData.st_size;
-                            strcpy(pstReadData->mucFileType, ucFileType);
+                            strncpy(pstReadData->mucFileType, ucFileType, 
+                                sizeof(pstReadData->mucFileType) - 1);
+
+                            //Debug prints
+                            printf("%s\n", pstReadData->mpucFileName);
+                            printf("%d\n", pstReadData->mucFileSize);
+                            printf("%s\n", pstReadData->mucFileType);
+
+                            //Add Node in the beginning of linked list
+                            if(LinkedListAddNode(pstLinkdListHead, pstReadData))
+                            {
+                                blRet = true;
+                            }
+                        }
+                        else
+                        {
+                            printf("Read file type failed\n");
                         }
                     }
-
-                    // debug prints
-                    printf("%s\n", pstReadData->mpucFileName);
-                    printf("%d\n", pstReadData->mucFileSize);
-                    printf("%s\n", pstReadData->mucFileType);
-
-                    if(LinkedListAddNode(pstLinkdListHead, pstReadData))
+                    else
                     {
-                        blRet = true;
+                        printf("Read File Size failed\n");
                     }
                 }
             }
