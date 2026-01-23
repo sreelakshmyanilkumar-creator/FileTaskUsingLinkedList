@@ -1,4 +1,4 @@
-//************************* File Task Using Linked List ************************
+//************************* File Data Lister ***********************************
 //  Copyright (c) 2026 Trenser Technology Solutions 
 //  All Rights Reserved 
 //******************************************************************************
@@ -23,7 +23,9 @@
 //******************************* Local Types **********************************
 
 //******************************* Local Constants ******************************
-#define MAIN_ARGC   (2)
+#define ARGC_COUNT  (2)
+#define FAILURE     (1)
+#define SUCCESS     (0)
 
 //******************************* Local Variables ******************************
 
@@ -39,26 +41,22 @@ bool CmdLineArgCheck(uint8_t ucargc, uint8_t **pucargv);
 //*
 int main(int argc, char *argv[])
 {
-    int lRet = false;
-    FILE_DATA pstReadData;
-    FILE_LINKED_LIST *pstLinkdListHead = NULL;
+    int lRet = FAILURE;
 
     if(CmdLineArgCheck(argc, (uint8_t**)argv))
     {
-        InitializeLinkedList(&pstLinkdListHead);
-        
-        if(pstLinkdListHead == NULL)
+        if(InitializeLinkedList())
         {
             printf("Linked List Initialized Successfully\n");
 
-            if(ReadFilesAndBuildList(argv[1], &pstLinkdListHead))
+            if(ReadFilesAndBuildList(argv[1]))
             {
                 printf("Data Read successfull\n");
 
-                if(LinkedListPrint(pstLinkdListHead))
+                if(LinkedListPrint())
                 {
                     printf("Linked List printed Successfully\n");
-                    lRet = true;
+                    lRet = SUCCESS;
                 }
             }
         }
@@ -80,7 +78,7 @@ bool CmdLineArgCheck(uint8_t ucargc, uint8_t **pucargv)
 
     if(pucargv != NULL)
     {
-        if(ucargc < MAIN_ARGC)
+        if(ucargc < ARGC_COUNT)
         {
             printf("Invalid Command Line Argument\n");
             printf("Use: %s <Directory path> \n", 

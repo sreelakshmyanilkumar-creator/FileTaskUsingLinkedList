@@ -1,4 +1,4 @@
-//************************* File Task Using Linked List ************************
+//************************* File Data Lister ***********************************
 //  Copyright (c) 2026 Trenser Technology Solutions 
 //  All Rights Reserved 
 //******************************************************************************
@@ -26,6 +26,7 @@
 //***************************** Local Constants ********************************
 
 //***************************** Local Variables ********************************
+FILE_LINKED_LIST *pstLinkdListHead = NULL;
 
 //****************************** Local Functions *******************************
 
@@ -36,16 +37,14 @@
 //Return  : Pointer of Linked List head
 //Notes   : None
 //*
-bool InitializeLinkedList(FILE_LINKED_LIST **pstFileHead)
+bool InitializeLinkedList()
 {
     bool blRet = false;
-
-    if(pstFileHead != NULL)
+    if(pstLinkdListHead == NULL)
     {
-        *pstFileHead = NULL;
         blRet = true;
     }
-
+    
     return blRet;
 }
 
@@ -56,8 +55,7 @@ bool InitializeLinkedList(FILE_LINKED_LIST **pstFileHead)
 //Return  : Boolean value - for both input success return will be true else 
 //Notes   : None
 //*
-bool LinkedListAddNode(FILE_LINKED_LIST **pstLinkdListHead, 
-    FILE_DATA *pstReadData)
+bool LinkedListAddNode(FILE_DATA *pstReadData)
 {
     bool blRet = false;
     FILE_LINKED_LIST *pstNewNode = NULL;
@@ -80,10 +78,11 @@ bool LinkedListAddNode(FILE_LINKED_LIST **pstLinkdListHead,
                 strncpy(pstNewNode->mpstFileData->mucFileType, 
                 pstReadData->mucFileType, 
                 sizeof(pstNewNode->mpstFileData->mucFileType) - 1);
-                
-                pstNewNode->mpstnext = *pstLinkdListHead;
-                *pstLinkdListHead = pstNewNode;
+
+                pstNewNode->mpstnext = pstLinkdListHead;
+                pstLinkdListHead = pstNewNode;
             }
+
             blRet = true;
         }
     }
@@ -93,33 +92,29 @@ bool LinkedListAddNode(FILE_LINKED_LIST **pstLinkdListHead,
 
 //******************************.LinkedListPrint.*******************************
 //Purpose : To print linked list
-//Inputs  : pstLinkdListHead - Head of the linked list
+//Inputs  : None
 //Outputs : None 
 //Return  : Boolean value - for both input success return will be true else 
 //Notes   : None
 //*
-bool LinkedListPrint(FILE_LINKED_LIST *pstLinkdListHead)
+bool LinkedListPrint()
 {
     bool blRet = false;
     FILE_LINKED_LIST *pstTempNode = NULL;
     pstTempNode = pstLinkdListHead;
-
-    if(pstLinkdListHead != NULL)
+    
+    printf("%-20s %-10s %-10s\n", "FileName", "FileSize", "FileType");
+    
+    while(pstTempNode != NULL)
     {
-        printf("%-20s %-10s %-10s\n", "FileName", "FileSize", "FileType");
+        printf("%-20s %-10d %-10s\n",
+        pstTempNode->mpstFileData->mpucFileName,
+        pstTempNode->mpstFileData->mucFileSize,
+        pstTempNode->mpstFileData->mucFileType);
 
-        while(pstTempNode != NULL)
-        {
-            printf("%-20s %-10d %-10s\n",
-            pstTempNode->mpstFileData->mpucFileName,
-            pstTempNode->mpstFileData->mucFileSize,
-            pstTempNode->mpstFileData->mucFileType);
-
-            pstTempNode = pstTempNode->mpstnext;
-        }
-
+        pstTempNode = pstTempNode->mpstnext;
         blRet = true;
     }
-
+    
     return blRet;
 }

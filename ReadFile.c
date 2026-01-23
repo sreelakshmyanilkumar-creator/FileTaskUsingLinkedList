@@ -1,4 +1,4 @@
-//************************* File Task Using Linked List ************************
+//************************* File Data Lister ***********************************
 //  Copyright (c) 2026 Trenser Technology Solutions 
 //  All Rights Reserved 
 //******************************************************************************
@@ -34,7 +34,7 @@
 //Inputs  : pucReadFileName - Character Pointer to give the name of the 
 //          directory
 //          pstDirData - Pointer to dirent struct
-//Outputs : stStatFileData - updated with new file size
+//Outputs : pstStatFileData - updated with new file size
 //Return  : Boolean value - return true if success else false
 //Notes   : None
 //*
@@ -51,10 +51,6 @@ bool ReadFileSize(struct stat *pstStatFileData, struct dirent *pstDirData,
         stat(ucFullPath, pstStatFileData);
         blRet = true;
     }
-    else
-    {
-        printf("ReadFileSize fail - Pointer not correctly passed\n");
-    }
 
     return blRet;
 }
@@ -69,7 +65,7 @@ bool ReadFileSize(struct stat *pstStatFileData, struct dirent *pstDirData,
 bool ReadFileType(struct dirent *pstDirData, uint8_t *pucFileType)
 {
     bool blRet = false;
-    uint8_t *pucCheckDot;
+    uint8_t *pucCheckDot = NULL;
 
     if (pstDirData != NULL && pucFileType != NULL)
     {
@@ -77,20 +73,16 @@ bool ReadFileType(struct dirent *pstDirData, uint8_t *pucFileType)
 
         if (!pucCheckDot || pucCheckDot == pstDirData->d_name)
         {
-            strncpy((char*)pucFileType, "No", 256);
+            strncpy((char*)pucFileType, "No", FILE_TYPE_SIZE);
             pucFileType[255] = '\0';
         }
         else
         {
-            strncpy((char*)pucFileType, pucCheckDot + 1, 256);
-            pucFileType[255] = '\0';
+            strncpy((char*)pucFileType, pucCheckDot + 1, FILE_TYPE_SIZE);
+            pucFileType[FILE_TYPE_SIZE-1] = '\0';
         }
 
         blRet = true;
-    }
-    else
-    {
-        printf("Read file type fail - Pointer not correctly passed\n");
     }
 
     return blRet;
@@ -101,23 +93,20 @@ bool ReadFileType(struct dirent *pstDirData, uint8_t *pucFileType)
 //Purpose : To read file data and create linked list node
 //Inputs  : pucReadFileName - Character Pointer to give the name of the 
 //          directory
-//Outputs : pReadFileHead - Updated file data in the structure pointer
-//          pstLinkdListHead - Add linked list node
 //Return  : Boolean value - for both input success return will be true else 
 //          false
 //Notes   : None
 //*
-bool ReadFilesAndBuildList(const uint8_t *pucReadFileName, 
-    FILE_LINKED_LIST **pstLinkdListHead)
+bool ReadFilesAndBuildList(const uint8_t *pucReadFileName)
 {
     bool blRet = false;
-    struct dirent *pstDirData;
-    struct stat stStatFileData;
-    uint8_t ucFileType[256] = {0};
+    struct dirent *pstDirData = NULL;
+    struct stat stStatFileData = {0};
+    uint8_t ucFileType[FILE_TYPE_SIZE] = {0};
     DIR *pstDirDataOprtn = NULL;
     FILE_DATA *pstReadData = NULL;
 
-    if(pucReadFileName != NULL && *pstLinkdListHead == NULL)
+    if(pucReadFileName != NULL)
     {
         pstDirDataOprtn = opendir(pucReadFileName);
 
@@ -150,27 +139,15 @@ bool ReadFilesAndBuildList(const uint8_t *pucReadFileName,
                                 sizeof(pstReadData->mucFileType) - 1);
 
                             //Add Node in the beginning of linked list
-                            if(LinkedListAddNode(pstLinkdListHead, pstReadData))
+                            if(LinkedListAddNode(pstReadData))
                             {
                                 blRet = true;
                             }
                         }
-                        else
-                        {
-                            printf("Read file type failed\n");
-                        }
-                    }
-                    else
-                    {
-                        printf("Read File Size failed\n");
                     }
                 }
             }
         }
-    }
-    else
-    {
-        printf("Read data fail\n");
     }
 
     return blRet;

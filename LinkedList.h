@@ -1,4 +1,4 @@
-//************************* File Task Using Linked List ************************
+//************************* File Data Lister ***********************************
 //  Copyright (c) 2026 Trenser Technology Solutions 
 //  All Rights Reserved 
 //******************************************************************************
@@ -22,16 +22,14 @@
 //******************************* Global Types *********************************
 
 //***************************** Global Constants *******************************
-#define FULL_PATH_SIZE 1024
+#define FULL_PATH_SIZE  (1024)
 
 //***************************** Global Variables *******************************
+extern FILE_LINKED_LIST *pstLinkdListHead;
 
 //**************************** Forward Declarations ****************************
-bool InitializeLinkedList(FILE_LINKED_LIST **pstFileHead);
-bool LinkedListAddNode(FILE_LINKED_LIST **pstLinkdListHead, 
-    FILE_DATA *pstReadData);
-bool LinkedListPrint(FILE_LINKED_LIST *pstLinkdListHead);
-bool LinkedListCreate(FILE_LINKED_LIST **pstLinkdListHead, 
-    FILE_DATA *pstReadData);
+bool InitializeLinkedList();
+bool LinkedListAddNode(FILE_DATA *pstReadData);
+bool LinkedListPrint();
 #endif //_LL_CREATION_H_
 //EOF
